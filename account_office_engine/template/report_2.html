@@ -1,0 +1,97 @@
+{% extends 'admin_header.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <div class="row">
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <div class="section-header-breadcrumb-chart float-right">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Book Report By Sub-category </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <form method="POST" action="/report2/">
+                                    {% csrf_token %}
+                                    <table>
+                                        <tr>
+                                            <th>
+                                                Account
+                                            </th>
+
+                                        </tr>
+                                        <tr>
+
+                                            <td>
+                                                <select class="form-control" name="a_id">
+                                                    {% for val in accounts %}
+
+                                                    <option value="{{val.a_id}}">{{val.a_id}} - {{val.c_id.c_email}}</option>
+
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+
+                                            <td>
+
+                                                <input type="submit" class="btn btn-primary">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                                    <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Transaction Type</th>
+                                        <th>Transaction Amount</th>
+                                        <th>Transaction Date</th>
+                                        <th>Transaction Account ID</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for data in transaction %}
+
+                                    <tr>
+                                        <td>{{data.t_id}}</td>
+                                        <td>{{data.tt_id.tt_type}}</td>
+                                        <td>{{data.t_amount}}</td>
+                                        <td>{{data.t_date}}</td>
+                                        <td>{{data.a_id}}</td>
+                                        <td><a href="/d_transaction/{{data.t_id}}"><i class="fas fa-trash"></i></a></td>
+                                    </tr>
+
+                                    {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

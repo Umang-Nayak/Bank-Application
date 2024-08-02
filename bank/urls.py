@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from account_office_engine import views
 
 urlpatterns = [
@@ -24,4 +24,35 @@ urlpatterns = [
     path("logout/", views.admin_logout),
     path("register/", views.admin_registration),
     path("dashboard/", views.dashboard_page),
+    path('forgot_password/', views.forgot),
+    path('send_otp/', views.sendotp),
+    path('set_password/', views.set_password),
+
+    # Customer
+    path('customer/', views.show_customer),
+    path('d_customer/<int:cid>', views.destroy_customer),
+
+    # Account
+    path('account/', views.show_account),
+    path('d_account/<int:aid>', views.destroy_account),
+
+    # Transaction
+    path('transaction/', views.show_transaction),
+    path('d_transaction/<int:tid>', views.destroy_transaction),
+
+    # Transaction
+    path('feedback/', views.show_feedback),
+    path('d_feedback/<int:fid>', views.destroy_feedback),
+
+    # Profile
+    path('profile/', views.show_profile),
+    path('update_pass/', views.update_pass),
+
+    # Reports
+    path('report1/', views.first_report),
+    path('report2/', views.second_report),
+    path('report3/', views.third_report),
+    path('report4/', views.fourth_report),
+
+    path('c/', include('customer.customer_urls'))
 ]

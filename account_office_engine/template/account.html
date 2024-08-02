@@ -1,0 +1,61 @@
+{% extends 'admin_header.html' %}
+{% load static %}
+{% block content %}
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <div class="section-header-breadcrumb-content-chart float-right">
+                        <h1>Accounts</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Account Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                                    <thead>
+                                    <tr>
+                                        <th>Account ID</th>
+                                        <th>Customer Email</th>
+                                        <th>Account Open Date</th>
+                                        <th>Account Balance</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for data in a %}
+
+                                    <tr>
+                                        <td>{{data.a_id}}</td>
+                                        <td>{{data.c_id.c_email}}</td>
+                                        <td>{{data.a_open_date}}</td>
+                                        <td>₹ {{data.a_balance}}</td>
+                                        <td><a href="/d_account/{{data.a_id}}"><i class="fas fa-trash"></i></a></td>
+                                    </tr>
+
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

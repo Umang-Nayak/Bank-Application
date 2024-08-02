@@ -1,0 +1,60 @@
+{% extends 'admin_header.html' %}
+{% load static %}
+{% block content %}
+<!-- Main Content -->
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <div class="section-header-breadcrumb-content-chart float-right">
+                        <h1>Accounts</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Account Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                                    <thead>
+                                    <tr>
+                                        <th>Your Account ID</th>
+                                        <th>Account Open Date</th>
+                                        <th>Account Balance</th>
+                                        <th>Delete Account</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    <tr>
+                                        <td>{{a.a_id}}</td>
+                                        <td>{{a.a_open_date}}</td>
+                                        <td>₹ {{a.a_balance}}</td>
+                                        <td><a href="/c/delete_account/{{a.a_id}}"><i class="fas fa-trash"></i></a></td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="/money_withdraw/" class="badge badge-primary">Withdraw Money</a>
+
+        <a href="/money_deposit/" class="badge badge-primary">Deposit Money</a>
+
+    </section>
+</div>
+
+{% endblock %}

@@ -56,7 +56,7 @@ ROOT_URLCONF = 'bank.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'account_office_engine/template'),],
+        'DIRS': [os.path.join(BASE_DIR, 'account_office_engine/template'), os.path.join(BASE_DIR, 'customer/template'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'bank.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bank',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306'
     }
 }
 
@@ -118,10 +122,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'account_office_engine/static/'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'account_office_engine/static/'), os.path.join(BASE_DIR, 'customer/static/')]
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'kingumang639@gmail.com'
+EMAIL_HOST_PASSWORD = 'kiopedfoomwhgecz'
