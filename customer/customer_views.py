@@ -18,7 +18,7 @@ def customer_login(request):
         if val.exists():
             val = val.first()
             request.session['customer_id'] = val.c_id
-            return redirect('/c/c_dashboard/')
+            return redirect('/c/c_transaction/')
         else:
             messages.error(request, "Invalid Username or Password")
             return redirect('/c/c_login/')
@@ -141,3 +141,23 @@ def destroy_customer_account(request, aid):
     else:
         return render(request, "c-login.html")
 
+
+def customer_money_deposit(request):
+    if 'customer_id' in request.session:
+        if request.method == "POST":
+            form = AreaForm(request.POST)
+            print("-------------------", form.errors)
+
+            if form.is_valid():
+                try:
+                    form.save()
+                    return redirect('/area')
+                except:
+                    print('------------------------', sys.exc_info())
+
+        else:
+            form = Area()
+
+        return render(request, 'Area-insert.html', {'form': form})
+    else:
+        return render(request, "login.html")
