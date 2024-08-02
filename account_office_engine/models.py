@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db import models, transaction
+from django.core.exceptions import ValidationError
 
 class Employee(models.Model):
     e_id = models.AutoField(primary_key=True)
@@ -102,12 +103,33 @@ class Transaction(models.Model):
     tt_id = models.ForeignKey(TransactionType, on_delete=models.CASCADE)
     t_amount = models.FloatField()
     t_date = models.DateField(auto_now_add=True)
-    a_id = models.ForeignKey(Account, on_delete=models.CASCADE)
-
-    # transfer_account_no = models.ForeignKey(Account, on_delete=models.CASCADE)
+    a_id = models.ForeignKey(Account, related_name='source_account', on_delete=models.CASCADE)
+    transfer_account_no = models.ForeignKey(Account, related_name='destination_account', on_delete=models.CASCADE)
 
     class Meta:
         db_table = "transaction"
 
     def __str__(self):
         return f"{self.t_id} - {self.t_amount}"
+
+    def save(self, *args, **kwargs):
+        # Ensure atomic transactions for balance updates
+        with transaction.atomic():
+            # Fetch the source and destination accounts
+            source_account = self.a_id
+            destination_account = self.transfer_account_no
+
+            # Ensure source account has sufficient balance
+            if source_account.a_balance < self.t_amount:
+                raise ValidationError('Insufficient balance in the source account.')
+
+            # Update balances
+            source_account.a_balance -= self.t_amount
+            destination_account.a_balance += self.t_amount
+
+            # Save the updated accounts
+            source_account.save()
+            destination_account.save()
+
+            # Call the superclass save method
+            super().save(*args, **kwargs)
