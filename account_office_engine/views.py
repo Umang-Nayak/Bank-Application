@@ -6,7 +6,8 @@ from django.contrib import messages
 from django.utils.dateparse import parse_date
 
 from account_office_engine.forms import EmployeeForm, EmployeeProfileForm
-from account_office_engine.models import Employee, Customer, Account, Transaction, TransactionType, Feedback
+from account_office_engine.models import Employee, Customer, Account, Transaction, TransactionType, Feedback, \
+    Notification
 import os
 import sys
 
@@ -293,5 +294,22 @@ def fourth_report(request):
         else:
             transaction = Transaction.objects.all()
         return render(request, "report_4.html", {'transactions': transaction})
+    else:
+        return render(request, "login.html")
+
+
+def show_notification(request):
+    if 'employee_id' in request.session:
+        notification = Notification.objects.all()
+        return render(request, "notification.html", {'n': notification})
+    else:
+        return render(request, "login.html")
+
+
+def destroy_notification(request, nid):
+    if 'employee_id' in request.session:
+        ni = Notification.objects.get(n_id=nid)
+        ni.delete()
+        return redirect("/notification")
     else:
         return render(request, "login.html")

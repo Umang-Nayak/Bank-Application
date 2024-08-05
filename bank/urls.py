@@ -44,6 +44,10 @@ urlpatterns = [
     path('feedback/', views.show_feedback),
     path('d_feedback/<int:fid>', views.destroy_feedback),
 
+    # Transaction
+    path('notification/', views.show_notification),
+    path('d_notification/<int:nid>', views.destroy_transaction),
+
     # Profile
     path('profile/', views.show_profile),
     path('update_pass/', views.update_pass),
