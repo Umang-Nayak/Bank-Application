@@ -40,13 +40,14 @@ urlpatterns = [
     path('transaction/', views.show_transaction),
     path('d_transaction/<int:tid>', views.destroy_transaction),
 
-    # Transaction
+    # Feedback
     path('feedback/', views.show_feedback),
     path('d_feedback/<int:fid>', views.destroy_feedback),
 
-    # Transaction
+    # Notification
     path('notification/', views.show_notification),
-    path('d_notification/<int:nid>', views.destroy_transaction),
+    path('d_notification/<int:nid>', views.destroy_notification),
+    path('ni/', views.insert_notification),
 
     # Profile
     path('profile/', views.show_profile),

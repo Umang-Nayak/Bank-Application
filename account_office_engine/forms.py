@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from account_office_engine.models import Employee, Customer
+from account_office_engine.models import Employee, Customer, Notification
 
 
 class EmployeeForm(forms.ModelForm):
@@ -48,3 +48,9 @@ class CustomerForm(forms.ModelForm):
         if len(contact) != 10 or not contact.isdigit():
             raise ValidationError("Contact number must be exactly 10 digits long and contain only digits.")
         return contact
+
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = Notification
+        fields = ["n_description", "c_id"]

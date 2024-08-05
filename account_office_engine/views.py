@@ -1,16 +1,14 @@
 import random
-
+from datetime import date
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.dateparse import parse_date
-
-from account_office_engine.forms import EmployeeForm, EmployeeProfileForm
+from account_office_engine.forms import EmployeeForm, EmployeeProfileForm, NotificationForm
 from account_office_engine.models import Employee, Customer, Account, Transaction, TransactionType, Feedback, \
     Notification
 import os
 import sys
-
 from bank import settings
 
 
@@ -33,7 +31,29 @@ def admin_login(request):
 
 def dashboard_page(request):
     if 'employee_id' in request.session:
-        return render(request, "index.html")
+        today = date.today()
+
+        customers = Customer.objects.all().count()
+        transactions = Transaction.objects.all().count()
+        feedbacks = Feedback.objects.all().count()
+        notifications = Notification.objects.all().count()
+
+        employees = Employee.objects.all().count
+        todays_transactions = Transaction.objects.filter(t_date=today).count()
+        today_feedbacks = Feedback.objects.filter(f_date=today).count()
+        today_accounts = Account.objects.filter(a_open_date=today).count()
+
+        return render(request, "index.html",
+                      {
+                          "customers": customers,
+                          "transactions": transactions,
+                          "feedbacks": feedbacks,
+                          "notifications": notifications,
+                          "employees": employees,
+                          "today_transactions": todays_transactions,
+                          "today_feedbacks": today_feedbacks,
+                          "today_accounts": today_accounts
+                      })
     else:
         return render(request, "login.html")
 
@@ -311,5 +331,28 @@ def destroy_notification(request, nid):
         ni = Notification.objects.get(n_id=nid)
         ni.delete()
         return redirect("/notification")
+    else:
+        return render(request, "login.html")
+
+
+def insert_notification(request):
+    all_customers = Customer.objects.all()
+    if 'employee_id' in request.session:
+        if request.method == "POST":
+            form = NotificationForm(request.POST)
+            print("Form Error -------------------> ", form.errors)
+
+            if form.is_valid():
+                try:
+                    form.save()
+                    return redirect('/notification')
+                except Exception as e:
+                    print(f'System Error : {sys.exc_info()}')
+                    print(f'Exception Error : {e}')
+
+        else:
+            form = Notification()
+
+        return render(request, 'notification-insert.html', {'form': form, "customers":all_customers})
     else:
         return render(request, "login.html")

@@ -2,6 +2,7 @@ from django.db import models
 from django.db import models, transaction
 from django.core.exceptions import ValidationError
 
+
 class Employee(models.Model):
     e_id = models.AutoField(primary_key=True)
     e_name = models.CharField(max_length=100)
