@@ -18,7 +18,7 @@ def customer_login(request):
         if val.exists():
             val = val.first()
             request.session['customer_id'] = val.c_id
-            return redirect('/c/c_transaction/')
+            return redirect('/c/show_transaction/')
         else:
             messages.error(request, "Invalid Username or Password")
             return redirect('/c/c_login/')
@@ -142,22 +142,67 @@ def destroy_customer_account(request, aid):
         return render(request, "c-login.html")
 
 
+def show_customer_transaction(request):
+    if 'customer_id' in request.session:
+        account = Account.objects.filter(c_id=request.session['customer_id']).first()
+        all_transaction = Transaction.objects.filter(a_id=account.a_id)
+        return render(request, "c-transaction.html", {'t': all_transaction})
+    else:
+        return render(request, "c-login.html")
+
+
+def customer_money_withdraw(request):
+    if 'customer_id' in request.session:
+        if request.method == "POST":
+            money = request.POST.get("money")
+            try:
+                money = float(money)
+                print(f"Deposit Amount : {money}")
+            except Exception as e:
+                print(f"Exception Error : {e}")
+                messages.error(request, "Please Enter Valid Amount !")
+                return render(request, 'withdraw.html')
+
+            account = Account.objects.filter(c_id=request.session['customer_id']).first()
+            if money > 0:
+                if account.a_balance >= money:
+                    account.a_balance -= money
+                    account.save()
+                    return redirect("/c/show_account/")
+                else:
+                    messages.error(request, "You don't have enough balance !")
+                    return render(request, 'withdraw.html')
+            else:
+                messages.error(request, "Please Enter Valid Amount !")
+                return render(request, 'withdraw.html')
+        else:
+            return render(request, 'withdraw.html')
+    else:
+        return render(request, "c-login.html")
+
+
 def customer_money_deposit(request):
     if 'customer_id' in request.session:
         if request.method == "POST":
-            form = AreaForm(request.POST)
-            print("-------------------", form.errors)
+            money = request.POST.get("money")
+            try:
+                money = float(money)
+                print(f"Deposit Amount : {money}")
+            except Exception as e:
+                print(f"Exception Error : {e}")
+                messages.error(request, "Please Enter Valid Amount !")
+                return render(request, 'deposit.html')
 
-            if form.is_valid():
-                try:
-                    form.save()
-                    return redirect('/area')
-                except:
-                    print('------------------------', sys.exc_info())
+            account = Account.objects.filter(c_id=request.session['customer_id']).first()
+            if money > 0:
+                account.a_balance += money
+                account.save()
+                return redirect("/c/show_account/")
 
+            else:
+                messages.error(request, "Please Enter Valid Amount !")
+                return render(request, 'deposit.html')
         else:
-            form = Area()
-
-        return render(request, 'Area-insert.html', {'form': form})
+            return render(request, 'deposit.html')
     else:
-        return render(request, "login.html")
+        return render(request, "c-login.html")

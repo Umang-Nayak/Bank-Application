@@ -16,4 +16,11 @@ urlpatterns = [
     path('show_account/', customer_views.show_customer_account),
     path('delete_account/', customer_views.destroy_customer_account),
 
+    # Transaction
+    path('show_transaction/', customer_views.show_customer_transaction),
+
+    # Withdraw - Deposit
+    path('money_withdraw/', customer_views.customer_money_withdraw),
+    path('money_deposit/', customer_views.customer_money_deposit),
+
 ]

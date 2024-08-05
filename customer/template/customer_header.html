@@ -46,12 +46,12 @@
             </div>
             <ul class="navbar-nav navbar-right">
                 <li>
-                    <a href="/logout/" class="dropdown-item has-icon text-danger">
+                    <a href="/c/c_logout/" class="dropdown-item has-icon text-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </li>
                 <li>
-                    <a href="/profile/" class="dropdown-item has-icon">
+                    <a href="/c/c_profile/" class="dropdown-item has-icon">
                         <i class="far fa-user"></i> Profile
                     </a>
                 </li>
@@ -69,29 +69,26 @@
                     <li class="dropdown active" style="display: block;">
                         <div class="sidebar-profile">
                             <div class="siderbar-profile-pic">
-                                <img src="{% static 'assets/img/BM/logo.jpeg' %}"
-                                     class="profile-img-circle box-center"
-                                     alt="Book Mania">
+{#                                <img src="{% static 'assets/img/BM/logo.jpeg' %}"#}
+{#                                     class="profile-img-circle box-center"#}
+{#                                     alt="Book Mania">#}
                             </div>
                             <div class="siderbar-profile-details">
-                                <div class="siderbar-profile-name">
-                                    {{request.session.admin_fname}} {{request.session.admin_lname}}
-                                </div>
-                                <div class="siderbar-profile-position">Admin</div>
+                                <div class="siderbar-profile-position">Customer</div>
                             </div>
 
                             <div class="sidebar-profile-buttons">
                                 <table>
                                     <tr>
                                         <td>
-                                            <a class="tooltips waves-effect waves-block toggled" href="/profile/"
+                                            <a class="tooltips waves-effect waves-block toggled" href="/c/c_profile/"
                                                data-toggle="tooltip" title="" data-original-title="Profile">
                                                 <i class="fas fa-user sidebarQuickIcon"></i>
                                             </a>
                                         </td>
                                         <td>
 
-                                            <a class="tooltips waves-effect waves-block" href="/logout/"
+                                            <a class="tooltips waves-effect waves-block" href="/c/c_logout/"
                                                data-toggle="tooltip" title="" data-original-title="Logout">
                                                 <i class="fas fa-share-square sidebarQuickIcon"></i>
                                             </a>
