@@ -1,15 +1,13 @@
 from django.contrib import admin
 from account_office_engine.models import (Employee, Customer, TransactionType,
                                           Account, AccountInterest, Feedback,
-                                          Notification, Transaction)
+                                          Notification, Transaction, Bank)
 
 from django.contrib import admin
 from django.http import HttpResponse
 import openpyxl
 from io import BytesIO
 from django.urls import path
-
-from .models import Employee
 
 
 def export_to_excel(queryset, filename):
@@ -185,3 +183,4 @@ class TransactionAdmin(admin.ModelAdmin):
 admin.site.register(TransactionType)
 admin.site.register(AccountInterest)
 admin.site.register(Notification)
+admin.site.register(Bank)

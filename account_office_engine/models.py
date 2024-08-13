@@ -49,28 +49,16 @@ class TransactionType(models.Model):
         return f"{self.tt_type}"
 
 
-class Account(models.Model):
-    a_id = models.AutoField(primary_key=True)
-    c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    a_open_date = models.DateField(auto_now_add=True)
-    a_balance = models.FloatField(default=0)
-
-    class Meta:
-        db_table = "account"
-
-    def __str__(self):
-        return f"{self.a_id} - {self.c_id.c_email} - {self.a_balance}"
-
-
 class AccountInterest(models.Model):
     ai_id = models.AutoField(primary_key=True)
-    ai_amount = models.FloatField()
+    ai_rate = models.FloatField()
+    ai_amount_period = models.IntegerField()
 
     class Meta:
         db_table = "account_interest"
 
     def __str__(self):
-        return f"{self.ai_id} - {self.ai_amount}"
+        return f"{self.ai_id} - {self.ai_rate} - {self.ai_amount_period}"
 
 
 class Feedback(models.Model):
@@ -97,6 +85,37 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.n_description} - {self.c_id.c_name}"
+
+
+class Bank(models.Model):
+    b_id = models.AutoField(primary_key=True)
+    b_name = models.CharField(max_length=500, null=False, blank=False)
+    b_city = models.CharField(max_length=500, null=False, blank=False)
+    b_area = models.CharField(max_length=500, null=False, blank=False)
+    b_branch = models.CharField(max_length=500, null=False, blank=False)
+    b_address = models.CharField(max_length=500, null=False, blank=False)
+    b_pincode = models.CharField(max_length=500, null=False, blank=False)
+    b_ifsc = models.CharField(max_length=500, null=False, blank=False)
+
+    class Meta:
+        db_table = "bank"
+
+    def __str__(self):
+        return f"{self.b_name} - {self.b_ifsc}"
+
+
+class Account(models.Model):
+    a_id = models.AutoField(primary_key=True)
+    c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    a_open_date = models.DateField(auto_now_add=True)
+    a_balance = models.FloatField(default=0)
+    b_id = models.ForeignKey(Bank, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "account"
+
+    def __str__(self):
+        return f"{self.a_id} - {self.c_id.c_email} - {self.a_balance}"
 
 
 class Transaction(models.Model):
@@ -134,3 +153,16 @@ class Transaction(models.Model):
 
             # Call the superclass save method
             super().save(*args, **kwargs)
+
+
+class InterestToCustomer(models.Model):
+    ic_id = models.AutoField(primary_key=True)
+    ic_amount_pay = models.FloatField()
+    ic_amount_added_date = models.DateField(auto_now_add=True)
+    a_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "interest_to_customer"
+
+    def __str__(self):
+        return f"{self.ic_amount_pay} - {self.ic_amount_added_date} - {self.a_id}"

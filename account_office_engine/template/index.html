@@ -32,7 +32,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="card card-sales-widget card-bg-yellow-gradient">
                     <div class="card-icon shadow-primary bg-warning">
-                        <i class="fas fa-dolly"></i>
+                        <i class="fas fa-money-bill"></i>
                     </div>
                     <div class="card-wrap pull-right">
                         <div class="card-header">
@@ -46,7 +46,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="card card-sales-widget card-bg-orange-gradient">
                     <div class="card-icon shadow-primary bg-hibiscus">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-comment"></i>
 
                     </div>
                     <div class="card-wrap pull-right">
@@ -61,7 +61,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="card card-sales-widget card-bg-green-gradient">
                     <div class="card-icon shadow-primary bg-green">
-                        <i class="fas fa-rupee-sign"></i>
+                        <i class="far fa-bell"></i>
                     </div>
                     <div class="card-wrap pull-right">
                         <div class="card-header">
@@ -92,7 +92,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="card card-sales-widget card-bg-yellow-gradient">
                     <div class="card-icon shadow-primary bg-warning">
-                        <i class="fas fa-dolly"></i>
+                        <i class="fas fa-money-bill"></i>
                     </div>
                     <div class="card-wrap pull-right">
                         <div class="card-header">
@@ -106,7 +106,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="card card-sales-widget card-bg-orange-gradient">
                     <div class="card-icon shadow-primary bg-hibiscus">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-comment"></i>
 
                     </div>
                     <div class="card-wrap pull-right">
@@ -121,7 +121,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="card card-sales-widget card-bg-green-gradient">
                     <div class="card-icon shadow-primary bg-green">
-                        <i class="fas fa-rupee-sign"></i>
+                        <i class="fas fa-piggy-bank"></i>
                     </div>
                     <div class="card-wrap pull-right">
                         <div class="card-header">
@@ -147,77 +147,29 @@
                                 <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
                                     <thead>
                                     <tr>
-                                        <th>Order ID</th>
-                                        <th>Order Date</th>
-                                        <th>Order Status</th>
-                                        <th>User First Name</th>
-                                        <th>User Last Name</th>
-                                        <th>Total Amount</th>
-                                        <th>Payment Status</th>
+                                        <th>Transaction ID</th>
+                                        <th>Transaction Type</th>
+                                        <th>Transaction Amount</th>
+                                        <th>Transaction Date</th>
+                                        <th>Transaction Account ID</th>
                                         <th>Action</th>
-                                        <th>Status</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
 
-                                    {% for data in t %}
+                                    {% for data in today_transactions_details %}
 
                                     <tr>
-                                        <td>{{data.o_id}}</td>
-                                        <td>{{data.o_date}}</td>
-                                        <td>{{data.o_status}}</td>
-                                        <td>{{data.u_id.u_fname}}</td>
-                                        <td>{{data.u_id.u_lname}}</td>
-                                        <td>{{data.total_amount}}</td>
-                                        <td>
-                                            {% if data.payment_status == 1 %}
-                                            <span class="badge badge-secondary">Cash On Delivery</span>
-
-                                            {% elif data.payment_status == 2 %}
-                                            <span class="badge badge-primary">Online Payment</span>
-
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if data.o_status == 1 %}
-                                            <div style="display:none"></div>
-                                            <a href="/accept/{{ data.or_id }}" style="cursor:default"
-                                               onclick="return false;">
-                                                <i class="fa fa-check" style="color:green; font-size:18px;"></i> </a>
-                                            &nbsp;&nbsp;
-                                            <a href="/reject/{{ data.o_id }}" onclick="return false;"
-                                               style="cursor:default">
-                                                <i class="fa fa-times" style="color:red; font-size: 18px;"></i></a>
-                                            {% elif data.o_status == 2 %}
-                                            <a href="/accept/{{ data.o_id }}" style="cursor:default"
-                                               onclick="return false;">
-                                                <i class="fa fa-check" style="color:green; font-size:18px;"></i> </a>
-                                            &nbsp;&nbsp;
-                                            <a href="/reject/{{ data.o_id }}" onclick="return false;"
-                                               style="cursor:default">
-                                                <i class="fa fa-times" style="color:red; font-size: 18px;"></i></a>
-                                            {% else %}
-                                            <a href="/accept/{{ data.o_id }}">
-                                                <i class="fa fa-check" style="color:green; font-size: 18px;"></i> </a>
-                                            &nbsp;&nbsp;
-                                            <a href="/reject/{{ data.o_id }}">
-                                                <i class="fa fa-times" style="color:red; font-size: 18px;"></i></a>
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            {% if data.o_status == 1 %}
-                                                <span class="badge badge-success">ACCEPTED</span>
-                                            {% elif data.o_status == 2 %}
-                                                <span class="badge badge-danger">REJECTED</span>
-                                            {% else %}
-                                                <span class="badge badge-warning">PENDING</span>
-                                            {% endif %}
-                                        </td>
+                                        <td>{{data.t_id}}</td>
+                                        <td>{{data.tt_id.tt_type}}</td>
+                                        <td>{{data.t_amount}}</td>
+                                        <td>{{data.t_date}}</td>
+                                        <td>{{data.a_id}}</td>
+                                        <td><a href="/d_transaction/{{data.t_id}}"><i class="fas fa-trash"></i></a></td>
                                     </tr>
 
                                     {% endfor %}
-
 
                                     </tbody>
                                 </table>

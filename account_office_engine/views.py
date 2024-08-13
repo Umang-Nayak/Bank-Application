@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils.dateparse import parse_date
 from account_office_engine.forms import EmployeeForm, EmployeeProfileForm, NotificationForm
 from account_office_engine.models import Employee, Customer, Account, Transaction, TransactionType, Feedback, \
-    Notification
+    Notification, Bank
 import os
 import sys
 from bank import settings
@@ -39,9 +39,11 @@ def dashboard_page(request):
         notifications = Notification.objects.all().count()
 
         employees = Employee.objects.all().count
-        todays_transactions = Transaction.objects.filter(t_date=today).count()
+        today_transactions = Transaction.objects.filter(t_date=today).count()
         today_feedbacks = Feedback.objects.filter(f_date=today).count()
         today_accounts = Account.objects.filter(a_open_date=today).count()
+
+        transactions_details = Transaction.objects.filter(t_date=today)
 
         return render(request, "index.html",
                       {
@@ -50,9 +52,10 @@ def dashboard_page(request):
                           "feedbacks": feedbacks,
                           "notifications": notifications,
                           "employees": employees,
-                          "today_transactions": todays_transactions,
+                          "today_transactions": today_transactions,
                           "today_feedbacks": today_feedbacks,
-                          "today_accounts": today_accounts
+                          "today_accounts": today_accounts,
+                          "today_transactions_details": transactions_details,
                       })
     else:
         return render(request, "login.html")
@@ -354,5 +357,13 @@ def insert_notification(request):
             form = Notification()
 
         return render(request, 'notification-insert.html', {'form': form, "customers":all_customers})
+    else:
+        return render(request, "login.html")
+
+
+def show_bank(request):
+    if 'employee_id' in request.session:
+        banks = Bank.objects.all()
+        return render(request, "bank.html", {'b': banks})
     else:
         return render(request, "login.html")

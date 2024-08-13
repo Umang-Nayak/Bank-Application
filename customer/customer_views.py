@@ -1,9 +1,14 @@
 import random
+from datetime import date
+
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from account_office_engine.forms import EmployeeForm, CustomerForm
-from account_office_engine.models import Employee, Customer, Transaction, Account
+from account_office_engine.forms import EmployeeForm, CustomerForm, FeedbackForm, CustomerProfileForm
+from account_office_engine.models import Employee, Customer, Transaction, Account, TransactionType, Feedback, Bank, \
+    Notification
 import os
 import sys
 from bank import settings
@@ -26,23 +31,31 @@ def customer_login(request):
         return render(request, "c-login.html")
 
 
-def customer_dashboard_page(request):
-    if 'customer_id' in request.session:
-        return render(request, "c-index.html")
-    else:
-        return render(request, "c-login.html")
-
-
 def customer_registration(request):
+    all_banks = Bank.objects.all()
     if request.method == "POST":
         form = CustomerForm(request.POST)
         print(f"Form Error : {form.errors}")
 
+        contact = request.POST.get("c_contact")
+        if len(contact) != 10 or not contact.isdigit():
+            messages.error(request, "Contact number must be exactly 10 digits long and contain only digits.")
+            return redirect('/c/c_register/')
+
+        password = request.POST.get("c_password")
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            messages.error(request, e.messages)
+            return redirect('/c/c_register/')
+
         if form.is_valid():
             try:
                 form_data = form.save()
+                bank_id = request.POST.get("bank_id")
+                bank = Bank.objects.get(b_id=bank_id)
+                Account.objects.create(c_id=form_data, b_id=bank)
 
-                Account.objects.create(c_id=form_data)
                 return redirect('/c/c_login')
             except Exception as e:
                 messages.error(request, e)
@@ -56,7 +69,7 @@ def customer_registration(request):
     else:
         form = CustomerForm()
 
-    return render(request, 'c-register.html', {'form': form})
+    return render(request, 'c-register.html', {'form': form, "banks": all_banks})
 
 
 def customer_logout(request):
@@ -206,3 +219,194 @@ def customer_money_deposit(request):
             return render(request, 'deposit.html')
     else:
         return render(request, "c-login.html")
+
+
+def transfer_money(request):
+    try:
+        if 'customer_id' in request.session:
+            # all_accounts = Account.objects.all()
+            # all_transaction_types = TransactionType.objects.all()
+            banks = Bank.objects.all()
+            if request.method == "POST":
+                money = request.POST.get("money")
+                tt_id_object = TransactionType.objects.get(tt_id=1)
+                from_account_object = Account.objects.filter(c_id=request.session['customer_id']).first()
+                to_account = request.POST.get("a_id")
+                to_account_object = Account.objects.filter(a_id=to_account).first()
+
+                if to_account_object is None:
+                    messages.error(request, "Invalid Bank ID !")
+                    return redirect("/c/money_transfer/")
+
+                bank_name = request.POST.get("b_name")
+                bank_ifsc = request.POST.get("b_ifsc")
+
+                transfer_bank = to_account_object.b_id
+
+                if bank_name != transfer_bank.b_name:
+                    messages.error(request, "Invalid Bank !")
+                    return redirect("/c/money_transfer/")
+
+                if bank_ifsc != transfer_bank.b_ifsc:
+                    messages.error(request, "Invalid IFSC Code !")
+                    return redirect("/c/money_transfer/")
+
+                try:
+                    money = float(money)
+                    print(f"Transfer Amount : {money}")
+                except Exception as e:
+                    print(f"Exception Error : {e}")
+                    messages.error(request, "Please Enter Valid Amount !")
+                    return redirect("/c/money_transfer/")
+
+                if money > 0:
+
+                    if money < from_account_object.a_balance:
+                        Transaction.objects.create(
+                            tt_id=tt_id_object,
+                            t_amount=money,
+                            a_id=from_account_object,
+                            transfer_account_no=to_account_object
+                        )
+                        return redirect("/c/show_transaction/")
+                    else:
+                        messages.error(request, "Insufficient Balance !")
+                        return redirect("/c/money_transfer/")
+                else:
+                    messages.error(request, "Please Enter Valid Amount !")
+                    return redirect("/c/money_transfer/")
+            else:
+                return render(request, 'transfer_money.html', {"banks": banks}
+                              # {"accounts": all_accounts, "transaction_types": all_transaction_types}
+                              )
+        else:
+            return render(request, "c-login.html")
+
+    except Exception as e:
+        print(f"Exception Error : {e}")
+        messages.error(request, "Something Went Wrong, Please Try Again !")
+        return redirect("/c/money_transfer/")
+
+
+def customer_dashboard_page(request):
+    if 'customer_id' in request.session:
+        today = date.today()
+        customer_details = Customer.objects.get(c_id=request.session['customer_id'])
+        customer_account = Account.objects.filter(c_id=customer_details).first()
+
+        total_customers = Customer.objects.all().count()
+        total_transactions = Transaction.objects.filter(a_id=customer_account).count()
+        joining_date = customer_account.a_open_date
+        account_balance = customer_account.a_balance
+        today_transactions_details = Transaction.objects.filter(a_id=customer_account, t_date=today)
+
+        return render(request, "c-index.html",
+                      {
+                          "customers": total_customers,
+                          "transactions": total_transactions,
+                          "joining_date": joining_date,
+                          "account_balance": account_balance,
+                          "today_transactions_details": today_transactions_details,
+                      })
+    else:
+        return render(request, "c-login.html")
+
+
+def show_customer_feedback(request):
+    if 'customer_id' in request.session:
+        feedback = Feedback.objects.filter(c_id=request.session['customer_id'])
+        return render(request, "c-feedback.html", {'f': feedback})
+    else:
+        return render(request, "c-login.html")
+
+
+def destroy_customer_feedback(request, fid):
+    if 'customer_id' in request.session:
+        fi = Feedback.objects.get(f_id=fid)
+        fi.delete()
+        return redirect("/c/show_feedback")
+    else:
+        return render(request, "c-login.html")
+
+
+def insert_feedback(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        print(f"Form Error : {form.errors}")
+
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('/c/show_feedback')
+            except Exception as e:
+                messages.error(request, e)
+                print(f'System Error : {sys.exc_info()}')
+                print(f'Exception Error : {e}')
+                return redirect('/c/insert_customer_feedback/')
+        else:
+            for error in form.errors:
+                messages.error(request, form.errors[error])
+            return redirect('/c/insert_customer_feedback/')
+    else:
+        form = FeedbackForm()
+
+    return render(request, 'feedback-insert.html', {'form': form})
+
+
+def show_customer_profile(request):
+    if 'customer_id' in request.session:
+        ci = request.session['customer_id']
+        cid = Customer.objects.get(c_id=ci)
+        form = CustomerProfileForm(request.POST, instance=cid)
+        print(f"Form Errors : {form.errors}")
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect("/c/customer_profile/")
+            except Exception as e:
+                print(f"System Error : {sys.exc_info()}")
+                print(f"Exception Error : {e}")
+        return render(request, 'c-profile.html', {'cid': cid})
+    else:
+        return render(request, "c-login.html")
+
+
+def update_customer_pass(request):
+    if 'customer_id' in request.session:
+        cus_id = request.session['customer_id']
+        password = request.POST['pass']
+        confirm_pass = request.POST['cpass']
+
+        user = Customer.objects.get(c_id=cus_id)
+
+        if password == confirm_pass:
+            current_password = request.POST['current_password']
+            val = Customer.objects.filter(c_id=cus_id, c_password=current_password)
+            if val.exists():
+                Customer.objects.filter(c_id=cus_id).update(c_password=confirm_pass)
+                return redirect("/c/c_dashboard/")
+            else:
+                messages.error(request, "Something went Wrong")
+                return render(request, "c-profile.html")
+        else:
+            messages.error(request, "New password and Confirm password does not match ")
+            return render(request, 'c-profile.html', {'uid': user})
+    else:
+        return render(request, "c-login.html")
+
+
+def all_bank(request):
+    if 'customer_id' in request.session:
+        banks = Bank.objects.all()
+        return render(request, "c-bank.html", {'b': banks})
+    else:
+        return render(request, "login.html")
+
+
+def notification_to_customer(request):
+    if 'customer_id' in request.session:
+        customers = Customer.objects.get(c_id=request.session['customer_id'])
+        notification = Notification.objects.filter(c_id=customers)
+        return render(request, "c-notification.html", {'n': notification})
+    else:
+        return render(request, "login.html")

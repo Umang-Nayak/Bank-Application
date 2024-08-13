@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from account_office_engine.models import Employee, Customer, Notification
+from account_office_engine.models import Employee, Customer, Notification, Feedback
 
 
 class EmployeeForm(forms.ModelForm):
@@ -30,6 +30,12 @@ class EmployeeProfileForm(forms.ModelForm):
         fields = ["e_name", "e_email", "e_contact", "e_address"]
 
 
+class CustomerProfileForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ["c_name", "c_email", "c_contact", "c_address"]
+
+
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
@@ -54,3 +60,9 @@ class NotificationForm(forms.ModelForm):
     class Meta:
         model = Notification
         fields = ["n_description", "c_id"]
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ["f_description", "c_id"]

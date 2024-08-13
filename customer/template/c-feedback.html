@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                     <div class="section-header-breadcrumb-content-chart float-right">
-                        <h1>Accounts</h1>
+                        <h1>Feedback</h1>
                     </div>
                 </div>
             </div>
@@ -18,37 +18,32 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Account Details</h4>
+                            <h4>Feedback Details</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
                                     <thead>
                                     <tr>
-                                        <th>Your Account ID</th>
-                                        <th>Account Open Date</th>
-                                        <th>Account Balance</th>
-                                        <th>Bank Name</th>
-                                        <th>Bank Branch</th>
-                                        <th>Bank City</th>
-                                        <th>Bank IFSC Code</th>
-{#                                        <th>Delete Account</th>#}
+                                        <th>Feedback ID</th>
+                                        <th>Feedback Description</th>
+                                        <th>Feedback Date</th>
+                                        <th>Delete</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
 
+                                    {% for data in f %}
 
                                     <tr>
-                                        <td>{{a.a_id}}</td>
-                                        <td>{{a.a_open_date}}</td>
-                                        <td>₹ {{a.a_balance}}</td>
-                                        <td>{{a.b_id.b_name}}</td>
-                                        <td>{{a.b_id.b_branch}}</td>
-                                        <td>{{a.b_id.b_city}}</td>
-                                        <td>{{a.b_id.b_ifsc}}</td>
-{#                                        <td><a href="/c/delete_account/{{a.a_id}}"><i class="fas fa-trash"></i></a></td>#}
+                                        <td>{{data.f_id}}</td>
+                                        <td>{{data.f_description}}</td>
+                                        <td>{{data.f_date}}</td>
+                                        <td><a href="/d_feedback/{{data.f_id}}"><i class="fas fa-trash"></i></a></td>
                                     </tr>
+
+                                    {% endfor %}
 
                                     </tbody>
                                 </table>
@@ -58,12 +53,8 @@
                 </div>
             </div>
         </div>
-        <a href="/c/money_withdraw/" class="badge badge-primary">Withdraw Money</a>
-
-        <a href="/c/money_deposit/" class="badge badge-primary">Deposit Money</a>
-
-        <a href="/c/money_transfer/" class="badge badge-primary">Transfer Money</a>
     </section>
+    <a href="/c/insert_customer_feedback/" class="badge badge-primary">Insert Feedback</a>
 </div>
 
 {% endblock %}

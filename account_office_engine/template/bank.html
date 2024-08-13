@@ -1,4 +1,4 @@
-{% extends 'customer_header.html' %}
+{% extends 'admin_header.html' %}
 {% load static %}
 {% block content %}
 <!-- Main Content -->
@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                     <div class="section-header-breadcrumb-content-chart float-right">
-                        <h1>Accounts</h1>
+                        <h1>Banks</h1>
                     </div>
                 </div>
             </div>
@@ -18,37 +18,39 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Account Details</h4>
+                            <h4>Bank Details</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
                                     <thead>
                                     <tr>
-                                        <th>Your Account ID</th>
-                                        <th>Account Open Date</th>
-                                        <th>Account Balance</th>
+                                        <th>Bank ID</th>
                                         <th>Bank Name</th>
-                                        <th>Bank Branch</th>
                                         <th>Bank City</th>
+                                        <th>Bank Area</th>
+                                        <th>Bank Branch</th>
+                                        <th>Bank Address</th>
+                                        <th>Bank Pincode</th>
                                         <th>Bank IFSC Code</th>
-{#                                        <th>Delete Account</th>#}
-
                                     </tr>
                                     </thead>
                                     <tbody>
 
+                                    {% for data in b %}
 
                                     <tr>
-                                        <td>{{a.a_id}}</td>
-                                        <td>{{a.a_open_date}}</td>
-                                        <td>₹ {{a.a_balance}}</td>
-                                        <td>{{a.b_id.b_name}}</td>
-                                        <td>{{a.b_id.b_branch}}</td>
-                                        <td>{{a.b_id.b_city}}</td>
-                                        <td>{{a.b_id.b_ifsc}}</td>
-{#                                        <td><a href="/c/delete_account/{{a.a_id}}"><i class="fas fa-trash"></i></a></td>#}
+                                        <td>{{data.b_id}}</td>
+                                        <td>{{data.b_name}}</td>
+                                        <td>{{data.b_city}}</td>
+                                        <td>{{data.b_area}}</td>
+                                        <td>{{data.b_branch}}</td>
+                                        <td>{{data.b_address}}</td>
+                                        <td>{{data.b_pincode}}</td>
+                                        <td>{{data.b_ifsc}}</td>
                                     </tr>
+
+                                    {% endfor %}
 
                                     </tbody>
                                 </table>
@@ -58,11 +60,6 @@
                 </div>
             </div>
         </div>
-        <a href="/c/money_withdraw/" class="badge badge-primary">Withdraw Money</a>
-
-        <a href="/c/money_deposit/" class="badge badge-primary">Deposit Money</a>
-
-        <a href="/c/money_transfer/" class="badge badge-primary">Transfer Money</a>
     </section>
 </div>
 

@@ -19,6 +19,9 @@ from django.urls import path, include
 from account_office_engine import views
 
 urlpatterns = [
+    # Default Page
+    path("", views.dashboard_page),
+
     path('admin/', admin.site.urls),
     path("login/", views.admin_login),
     path("logout/", views.admin_logout),
@@ -58,6 +61,9 @@ urlpatterns = [
     path('report2/', views.second_report),
     path('report3/', views.third_report),
     path('report4/', views.fourth_report),
+
+    # Bank
+    path('bank/', views.show_bank),
 
     path('c/', include('customer.customer_urls'))
 ]

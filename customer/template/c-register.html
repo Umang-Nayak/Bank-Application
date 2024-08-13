@@ -99,6 +99,25 @@
                                 {#                                        <label class="custom-control-label" for="remember-me">Remember Me</label>#}
                                 {#                                    </div>#}
                                 {#                                </div>#}
+
+                                <div class="form-group">
+                                    <div class="d-block">
+                                        <label for="c_password" class="control-label">Select Bank For Your Account</label>
+                                    </div>
+                                <div>
+                                    <label>
+                                        <select class="form-control" name="bank_id">
+                                            {% for val in banks %}
+
+                                                <option value="{{ val.b_id }}">{{ val.b_name }}</option>
+
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                                </div>
+
+
                                 <div class="form-group">
                                     <label class="control-label">
                                         Already registered ? <a href="/c/c_login/">LOGIN</a>
